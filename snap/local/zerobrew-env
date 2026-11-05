@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+# Existing writable roots avoid upstream's sudo-based first-run fallback.
+mkdir -p "$ZEROBREW_ROOT" "$ZEROBREW_PREFIX"
+export PATH="$SNAP/bin:$ZEROBREW_PREFIX/bin:$ZEROBREW_PREFIX/sbin:$PATH"
+
+exec "$@"

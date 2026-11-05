@@ -1,0 +1,93 @@
+name: zerobrew
+base: core26
+version: '0.4.2'
+title: zerobrew
+icon: snap/gui/zerobrew.png
+summary: Install and run Homebrew CLI packages in an isolated prefix
+description: |
+  zerobrew is a fast Homebrew-compatible package manager written in Rust.
+  It downloads Linux bottles, resolves dependencies, caches packages and
+  provides install, upgrade, uninstall, Brewfile and run commands.
+
+  This strict snap keeps packages in its own writable prefix. Run installed
+  command-line tools with `zerobrew run <formula> [arguments]` or
+  `zerobrew.zbx <formula> [arguments]`. Those tools remain confined.
+
+  Host Homebrew migration, source builds and host-wide installation are not
+  supported. Packages that need host tools, fixed system paths, desktop
+  integration, devices or services may not work. No compiler toolchain or
+  Ruby runtime is bundled. Package compatibility varies by architecture.
+license: MIT OR Apache-2.0
+grade: stable
+confinement: strict
+website: https://zerobrew.rs
+source-code:
+  - https://github.com/zerobrewhq/zerobrew
+  - https://github.com/sidalit/zerobrew-snap
+issues:
+  - https://github.com/zerobrewhq/zerobrew/issues
+  - https://github.com/sidalit/zerobrew-snap/issues
+contact: https://github.com/sidalit/zerobrew-snap/issues
+
+platforms:
+  amd64:
+  arm64:
+
+environment:
+  ZEROBREW_ROOT: $SNAP_USER_COMMON/data
+  ZEROBREW_PREFIX: $SNAP_USER_COMMON/prefix
+  ZEROBREW_DIR: $SNAP_USER_COMMON
+  ZEROBREW_BIN: $SNAP/bin
+
+apps:
+  zerobrew:
+    command: bin/zb
+    command-chain: [bin/zerobrew-env]
+    plugs:
+      - home
+      - network
+      - removable-media
+  zbx:
+    command: bin/zbx
+    command-chain: [bin/zerobrew-env]
+    plugs:
+      - home
+      - network
+      - removable-media
+  brew:
+    command: bin/zb-brew
+    command-chain: [bin/zerobrew-env]
+    plugs:
+      - home
+      - network
+      - removable-media
+
+parts:
+  zerobrew:
+    plugin: rust
+    source: https://github.com/zerobrewhq/zerobrew.git
+    source-tag: v$SNAPCRAFT_PROJECT_VERSION
+    source-depth: 1
+    rust-channel: stable
+    rust-ignore-toolchain-file: true
+    rust-path: [zb_cli]
+    rust-cargo-parameters: [--locked]
+    build-packages:
+      - build-essential
+      - cmake
+      - pkg-config
+      - liblzma-dev
+    stage-packages:
+      - ca-certificates
+      - liblzma5
+    override-build: |
+      craftctl default
+      install -Dm644 LICENSE-MIT.md "$CRAFT_PART_INSTALL/share/doc/zerobrew/LICENSE-MIT.md"
+      install -Dm644 LICENSE-APACHE.md "$CRAFT_PART_INSTALL/share/doc/zerobrew/LICENSE-APACHE.md"
+      install -Dm644 LICENSE-HOMEBREW "$CRAFT_PART_INSTALL/share/doc/zerobrew/LICENSE-HOMEBREW"
+
+  launcher:
+    plugin: dump
+    source: snap/local
+    organize:
+      zerobrew-env: bin/zerobrew-env
