@@ -69,11 +69,6 @@ sudo snap install snapcraft --classic
 snapcraft pack
 ```
 
-```bash
-sudo snap install --dangerous ./zerobrew_*.snap
-zerobrew --version
-```
-
 ## Support
 
 - **Installation or snap issues:** [open a packaging issue](https://github.com/sidalit/zerobrew-snap/issues).
