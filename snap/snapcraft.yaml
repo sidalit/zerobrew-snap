@@ -71,7 +71,6 @@ parts:
     rust-channel: stable
     rust-ignore-toolchain-file: true
     rust-path: [zb_cli]
-    rust-cargo-parameters: [--locked]
     build-packages:
       - build-essential
       - cmake
