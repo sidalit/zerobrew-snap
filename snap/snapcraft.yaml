@@ -76,9 +76,6 @@ parts:
       - cmake
       - pkg-config
       - liblzma-dev
-    stage-packages:
-      - ca-certificates
-      - liblzma5
     override-build: |
       craftctl default
       install -Dm644 LICENSE-MIT.md "$CRAFT_PART_INSTALL/share/doc/zerobrew/LICENSE-MIT.md"
